@@ -15,6 +15,7 @@
  */
 package com.vicpin.presenteradapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,10 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Custom RecyclerView Adapter to hide MVP pattern implementation details
+ * @param <T> data type for adapter
+ */
 public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolder<T>> {
 
     private List<ViewInfo> registeredViewInfo = new ArrayList<>();
@@ -73,7 +78,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder<T> holder, int position) {
-        holder.bind(getItem(position));
+        holder.onBind(getItem(position));
     }
 
     @Override public void onViewRecycled(ViewHolder<T> holder) {
@@ -90,20 +95,45 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
         return data.get(position);
     }
 
-    public PresenterAdapter<T> setData(List<T> data){
+    /**
+     * Set adapter data and notifies the change
+     * @param data items collection
+     * @return PresenterAdapter called instance
+     */
+    public PresenterAdapter<T> setData(@NonNull List<T> data){
         this.data = data;
         notifyDataSetChanged();
         return this;
-    }
-
-    public void addData(List<T> data){
-        this.data.addAll(data);
-        notifyDataSetChanged();
     }
 
     @Override public int getItemCount() {
         return data.size();
     }
 
+    /**
+     * Add data at the end of the current data list and notifies the change
+     * @param data items collection to append at the end of the current collection
+     * @return PresenterAdapter called instance
+     */
+    public void addData(@NonNull List<T> data){
+        int currentItemCount = getItemCount();
+        this.data.addAll(data);
+        notifyItemRangeInserted(currentItemCount, data.size());
+    }
+
+    /**
+     * Clear adapter data and notifies the change
+     */
+    public void clearData(){
+        this.data = new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Called for each adapter position to get the associated ViewInfo object.
+     * ViewInfo class holds the ViewHolder class and the associated layout for building the view
+     * @param position item position in the adapter items collection
+     * @return new instance of ViewInfo object
+     */
     public abstract ViewInfo getViewInfo(int position);
 }

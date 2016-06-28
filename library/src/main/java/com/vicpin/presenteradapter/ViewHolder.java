@@ -19,6 +19,10 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+/**
+ * ViewHolder parent class
+ * @param <T> Adapter data type
+ */
 public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
 
     private Context mContext;
@@ -28,8 +32,11 @@ public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
         this.mContext = itemView.getContext();
     }
 
-    public void bind(T data) {
-
+    /**
+     * Called when adapter's onBindViewHolder is executed
+     * Initializes presenter setting the view and the data
+     */
+    public void onBind(T data) {
         if(getPresenter() == null) {
             createPresenter();
         }
@@ -38,19 +45,20 @@ public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
         getPresenter().bind(data);
     }
 
+    /**
+     * Called first time presenter is created for each ViewHolder in the adapter
+     */
     public abstract void createPresenter();
 
     public abstract ViewHolderPresenter getPresenter();
-
 
     public Context getContext(){
         return mContext;
     }
 
-    public void onCreate(){
-        getPresenter().onCreate();
-    }
-
+    /**
+     * Called when view is recycled in the adapter
+     */
     public void onDestroy(){
         getPresenter().onDestroy();
     }

@@ -17,6 +17,13 @@ package com.vicpin.presenteradapter;
 
 import com.vicpin.presenteradapter.model.ViewInfo;
 
+/**
+ * Custom PresenterAdapter for single item type adapters.
+ * No need to implement any adapter any method, only instanciate adapter and set to recyclerView.
+ * Instanciate with the static factory method "with", and set layout resource with "seLayout"
+ *
+ * @param <T> adapter item type
+ */
 public class SimplePresenterAdapter<T> extends PresenterAdapter<T> {
 
     private Class<? extends ViewHolder<T>> viewHolderClass;
@@ -24,12 +31,23 @@ public class SimplePresenterAdapter<T> extends PresenterAdapter<T> {
 
     private SimplePresenterAdapter(){}
 
+    /**
+     * Static factory method to create new SimplePresenterAdapter instance. Layout resource must be setted with setLayout method.
+     * @param viewHolderClass ViewHolder class used to build the view
+     * @param <T> adapter data type
+     * @return new SimplePresenterAdapter instance
+     */
     public static <T> SimplePresenterAdapter<T> with(Class<? extends ViewHolder<T>> viewHolderClass){
         SimplePresenterAdapter<T> adapter = new SimplePresenterAdapter<>();
         adapter.viewHolderClass = viewHolderClass;
         return adapter;
     }
 
+    /**
+     * Layout setter used by the adapter to build the view
+     * @param layoutResourceId
+     * @return
+     */
     public SimplePresenterAdapter setLayout(int layoutResourceId){
         this.layoutResourceId = layoutResourceId;
         return this;

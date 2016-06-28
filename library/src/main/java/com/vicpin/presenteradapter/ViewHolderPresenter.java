@@ -17,39 +17,52 @@ package com.vicpin.presenteradapter;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Class parent for Presenters asociated with ViewHolder classes
+ * @param <Data> Adapter data type
+ * @param <PresenterView> Interface View asociated with the ViewHolder's presenter
+ */
+public abstract class ViewHolderPresenter<Data, PresenterView> {
 
-public abstract class ViewHolderPresenter<T, H> {
+    /**
+     * Incremental integer generator for presenter
+     */
+    private static AtomicInteger presenterIdsGenerator = new AtomicInteger();
 
-    private static AtomicInteger keyGenerator = new AtomicInteger();
-
-    private H mView;
-    private T mItem;
+    private PresenterView mView;
+    private Data mItem;
     private Integer presenterId;
 
-    public void setView(H view) {
+    public void setView(PresenterView view) {
         this.mView = view;
     }
 
-    public void bind(T item) {
+    public void bind(Data item) {
         this.mItem = item;
         onCreate();
     }
 
+    /**
+     * Called when the view becomes visible in the adapter
+     */
     public abstract void onCreate();
 
+    /**
+     * Called when the view is recycled and is no more visible in the adapter
+     */
     public void onDestroy() {}
 
-    public H getView(){
+    public PresenterView getView(){
         return mView;
     }
 
-    public T getData(){
+    public Data getData(){
         return mItem;
     }
 
     public int getPresenterId(){
         if(presenterId == null){
-            presenterId = keyGenerator.getAndIncrement();
+            presenterId = presenterIdsGenerator.getAndIncrement();
         }
         return presenterId;
     }

@@ -19,6 +19,10 @@ import android.support.annotation.LayoutRes;
 
 import com.vicpin.presenteradapter.ViewHolder;
 
+/**
+ * Data structure which represents a ViewHolder and layout resource association
+ * @param <T> data type for adapter
+ */
 public class ViewInfo<T> {
 
     private Class<? extends ViewHolder<T>> viewHolderClass;
@@ -27,12 +31,23 @@ public class ViewInfo<T> {
 
     private ViewInfo(){}
 
+    /**
+     * Creates a new ViewInfo instance with a concrete ViewHolder class
+     * @param viewHolderClass class that inherit from ViewHolder class and implements a view for a concrete type of cell in the adapter
+     * @param <T> data type for adapter
+     * @return new ViewInfo instance
+     */
     public static <T> ViewInfo<T> createView(Class<? extends ViewHolder<T>> viewHolderClass) {
         ViewInfo<T> viewInfo = new ViewInfo<>();
         viewInfo.setViewHolderClass(viewHolderClass);
         return viewInfo;
     }
 
+    /**
+     * Specifies the layout used int the ViewHolder class
+     * @param layoutResourceId
+     * @return
+     */
     public ViewInfo<T> withLayout(@LayoutRes int layoutResourceId){
         this.viewResourceId = layoutResourceId;
         return this;
