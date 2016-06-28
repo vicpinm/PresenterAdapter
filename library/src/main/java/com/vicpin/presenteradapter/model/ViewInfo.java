@@ -37,7 +37,7 @@ public class ViewInfo<T> {
      * @param <T> data type for adapter
      * @return new ViewInfo instance
      */
-    public static <T> ViewInfo<T> createView(Class<? extends ViewHolder<T>> viewHolderClass) {
+    public static <T> ViewInfo<T> setView(Class<? extends ViewHolder<T>> viewHolderClass) {
         ViewInfo<T> viewInfo = new ViewInfo<>();
         viewInfo.setViewHolderClass(viewHolderClass);
         return viewInfo;
