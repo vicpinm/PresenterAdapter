@@ -57,7 +57,7 @@ This association could be in the ViewHolder class itself, with a method in this 
     }
 }
 
-##### Example of different types of views based on item property, using diferent view clases and layout:
+##### Example of different types of views based on item properties, using diferent view clases and layouts:
 
 public class MultipleAdapter extends PresenterAdapter<Country> {
 
