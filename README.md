@@ -51,9 +51,9 @@ This association could be in the ViewHolder class itself, with a method in this 
 
     @Override public ViewInfo getViewInfo(int position) {
         if(position % 2 == 0)
-            return ViewInfo.createView(CountryView.class).withLayout(R.layout.adapter_country_even);
+            return ViewInfo.setView(CountryView.class).withLayout(R.layout.adapter_country_even);
         else
-            return ViewInfo.createView(CountryView.class).withLayout(R.layout.adapter_country_even);
+            return ViewInfo.setView(CountryView.class).withLayout(R.layout.adapter_country_even);
     }
 }
 
@@ -63,9 +63,9 @@ public class MultipleAdapter extends PresenterAdapter<Country> {
 
     @Override public ViewInfo getViewInfo(int position) {
         if((getItem(position).isImportant())
-            return ViewInfo.createView(ImportantItemView.class).withLayout(R.layout.adapter_important_item);
+            return ViewInfo.setView(ImportantItemView.class).withLayout(R.layout.adapter_important_item);
         else
-            return ViewInfo.createView(NormalItemView.class).withLayout(R.layout.adapter_normal_item);
+            return ViewInfo.setView(NormalItemView.class).withLayout(R.layout.adapter_normal_item);
     }
 
 
