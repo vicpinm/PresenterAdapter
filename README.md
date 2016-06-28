@@ -45,7 +45,7 @@ It is very easy to implement multiple view types in your adapter. In this case, 
 PresenterAdapter parent class has only one abstract method you have to implement, getViewInfo(int position) method. This method returns an instance of ViewInfo class, which holds an association between your view class and your layour resource.
 This association could be in the ViewHolder class itself, with a method in this class that return the layout associated the view class. But that approximation is less flexible because you can't specify diferent layouts for the same view class.
 
-Example of different types of views based on item position, using the same view class and differents layouts:
+##### Example of different types of views based on item position, using the same view class and differents layouts:
 
     public class MultipleAdapter extends PresenterAdapter<Country> {
 
@@ -57,7 +57,7 @@ Example of different types of views based on item position, using the same view 
     }
 }
 
-Example of different types of views based on item property, using diferent view clases and layout:
+##### Example of different types of views based on item property, using diferent view clases and layout:
 
 public class MultipleAdapter extends PresenterAdapter<Country> {
 
