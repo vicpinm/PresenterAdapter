@@ -46,14 +46,14 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     @Override
     public ViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewInfo viewInfo = getViewInfoForType(viewType);
-        return getViewInfo(parent, viewInfo);
+        return getViewHolder(parent, viewInfo);
     }
 
     private ViewInfo getViewInfoForType(int viewType){
         return registeredViewInfo.get(viewType);
     }
 
-    private ViewHolder<T> getViewInfo(ViewGroup parent, ViewInfo viewInfo) {
+    private ViewHolder<T> getViewHolder(ViewGroup parent, ViewInfo viewInfo) {
         try {
             View view = LayoutInflater.from(parent.getContext()).inflate(viewInfo.getViewResourceId(), parent, false);
             Constructor<ViewHolder<T>> constructor =  viewInfo.getViewHolderClass().getConstructor(View.class);
