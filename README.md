@@ -12,11 +12,8 @@ A lighweight Android library to help you to implement the MVP pattern for your R
   * Custom presenter creation. You are responsible for creating presenter instance the same way yo usually do in your Activities or Fragments, which allows you to use tools like Dagger to inject your dependencies.
 
 <p align="center">
-  <img />
+  <img src ="/uml_small.png" />
 </p>
-<div style="text-align:center"><img src ="/uml_small.png" /></div>
-
-![UML Diagram](/uml_small.png "UML Diagram")
 
 
 ## Usage
