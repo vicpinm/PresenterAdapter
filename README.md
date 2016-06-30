@@ -33,7 +33,34 @@ For adapters with a unique kind of view, there is no need to create any adapter 
 
 Your view class inherits from ViewHolder<Data> class. This class is responsible for implementing the view layer in MPV pattern, equivalent to Activities or Fragments, and creating a presenter instance.
 
-See CountryView.java class in sample module for details.
+    public class CountryView extends ViewHolder<Country> implements CountryPresenter.View {
+
+    private CountryPresenter mPresenter;
+
+    @BindView(R.id.countryName)
+    TextView mCountryName;
+    
+    public CountryView(View itemView) {
+        super(itemView);
+        ButterKnife.bind(this, itemView);
+    }
+
+    @Override
+    public void createPresenter() {
+        mPresenter = new CountryPresenter();
+    }
+
+    @Override
+    public ViewHolderPresenter getPresenter() {
+        return mPresenter;
+    }
+
+    @Override
+    public void setCountryName(String text) {
+        mCountryName.setText(text);
+    }
+
+}
 
 ### Presenter class
 
@@ -43,7 +70,21 @@ You have to override onCreate method to iniciate your view. Also, you can overri
 Inside your presenter class, you have access to getData() method, in order to get the current data instance for the view, obtained from the adapter data.
 Also, inside your adapter class, you have accdess to getView() method, in order to interact with your view class.
 
-See CountryPresenter.java class in sample module for details.
+    public class CountryPresenter extends ViewHolderPresenter<Country, CountryPresenter.View> {
+
+        @Override
+        public void onCreate() {
+            setCountryName();
+        }
+
+        public void setCountryName(){
+            getView().setCountryName(getData().getName());
+        }
+
+        public interface View {
+             void setCountryName(String s);
+        }
+    }
 
 ### Multiple view type adapter
 
