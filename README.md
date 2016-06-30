@@ -11,6 +11,14 @@ A lighweight Android library to help you to implement the MVP pattern for your R
   * Lifecycle callbacks in presenter clases. You can control view creation and destroy for each RecyclerView position.
   * Custom presenter creation. You are responsible for creating presenter instance the same way yo usually do in your Activities or Fragments, which allows you to use tools like Dagger to inject your dependencies.
 
+<p align="center">
+  <img />
+</p>
+<div style="text-align:center"><img src ="/uml_small.png" /></div>
+
+![UML Diagram](/uml_small.png "UML Diagram")
+
+
 ## Usage
 ### Single view type adapter
 
