@@ -5,7 +5,7 @@ A lighweight Android library to help you to implement the MVP pattern for your R
 ## Features
 
   * Avoid implementing adapter classes, you only has to focus in views clases and their presenters
-  * Separates view representation with view logic with MVP pattern
+  * Separates view representation with view logic thanks to MVP pattern
   * Easy creation of different kinds of views for the same RecyclerView.
   * Avoid create new presenter for each row in the list, presenter instances are recycled in the same way that adapter does with ViewHolder clases.
   * Lifecycle callbacks in presenter clases. You can control view creation and destroy for each RecyclerView position.
