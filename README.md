@@ -12,7 +12,7 @@ A lighweight Android library to help you to implement the MVP pattern for your R
   * Custom presenter creation. You are responsible for creating presenter instance the same way yo usually do in your Activities or Fragments, which allows you to use tools like Dagger to inject your dependencies.
 
 <p align="center">
-  <img src ="/uml_small.png" />
+  <img src ="/uml_diagram.png" />
 </p>
 
 
@@ -31,8 +31,8 @@ For adapters with a unique kind of view, there is no need to create any adapter 
 
 ### View class
 
-Class responsible for implementing the view layer in MPV pattern, equivalent to Activities or Fragments. It inherits from ViewHolder<Data> class. 
-This class must implement two methods, createPresenter() and getPresenter(). You control presenter creation to allow using tools like Dagger.
+Your view class inherits from ViewHolder<Data> class. This class is responsible for implementing the view layer in MPV pattern, equivalent to Activities or Fragments, and creating a presenter instance.
+
 See CountryView.java class in sample module for details.
 
 ### Presenter class
@@ -42,13 +42,14 @@ This class is generic and you need to indicate to types, your adapter data type 
 You have to override onCreate method to iniciate your view. Also, you can override onDestroy method if you need to implement any destroy logic for your view.
 Inside your presenter class, you have access to getData() method, in order to get the current data instance for the view, obtained from the adapter data.
 Also, inside your adapter class, you have accdess to getView() method, in order to interact with your view class.
+
 See CountryPresenter.java class in sample module for details.
 
 ### Multiple view type adapter
 
-It is very easy to implement multiple view types in your adapter. In this case, instead of use SimpleAdapterPresenter, you have to implement your own adapter, in order to implement your representation logic.
-PresenterAdapter parent class has only one abstract method you have to implement, getViewInfo(int position) method. This method returns an instance of ViewInfo class, which holds an association between your view class and your layour resource.
-This association could be in the ViewHolder class itself, with a method in this class that return the layout associated the view class. But that approximation is less flexible because you can't specify diferent layouts for the same view class.
+It is very easy to implement multiple view types in your adapter. Instead of use SimpleAdapterPresenter, you have to implement your own adapter, in order to implement your representation logic. Your adapter class must extends from PresenterAdapter class.
+PresenterAdapter class has only one abstract method you have to implement, getViewInfo(int position) method. This method returns an instance of ViewInfo class, which holds an association between your view class and your layour resource.
+
 
 ##### Example of different types of views based on item position, using the same view class and differents layouts:
 
