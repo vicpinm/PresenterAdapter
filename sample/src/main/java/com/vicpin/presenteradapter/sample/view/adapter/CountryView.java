@@ -9,6 +9,7 @@ import com.vicpin.presenteradapter.ViewHolderPresenter;
 import com.vicpin.presenteradapter.sample.R;
 import com.vicpin.presenteradapter.sample.model.Country;
 import com.vicpin.presenteradapter.sample.presenter.CountryPresenter;
+import com.vicpin.presenteradapter.sample.view.interfaces.PresenterRecycledListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,5 +58,15 @@ public class CountryView extends ViewHolder<Country> implements CountryPresenter
     @Override
     public void setImage(int resourceId) {
         mImageView.setImageResource(resourceId);
+    }
+
+    /**
+     * Example of activity/fragment comunication through custom listener instance
+     * @param presenterId
+     */
+    @Override public void notifyPresenterDetroyed(int presenterId) {
+        if(getCustomListener() != null) {
+            ((PresenterRecycledListener) getCustomListener()).onPresenterRecycled(presenterId);
+        }
     }
 }

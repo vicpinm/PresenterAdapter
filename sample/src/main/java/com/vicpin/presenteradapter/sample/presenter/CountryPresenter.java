@@ -23,6 +23,10 @@ public class CountryPresenter extends ViewHolderPresenter<Country, CountryPresen
         getView().setInfo("Rendered with presenter #" + getPresenterId());
     }
 
+    @Override public void onDestroy() {
+        getView().notifyPresenterDetroyed(getPresenterId());
+    }
+
     public void setCountryImage(){
         getView().setImage(getData().getImageResourceId());
     }
@@ -33,5 +37,7 @@ public class CountryPresenter extends ViewHolderPresenter<Country, CountryPresen
         void setInfo(String s);
 
         void setImage(int resourceId);
+
+        void notifyPresenterDetroyed(int presenterId);
     }
 }

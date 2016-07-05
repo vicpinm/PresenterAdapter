@@ -26,10 +26,23 @@ import android.view.View;
 public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
 
     private Context mContext;
+    private Object customListener;
 
     public ViewHolder(View itemView) {
         super(itemView);
         this.mContext = itemView.getContext();
+    }
+
+    protected void setCustomLister(Object customListener){
+        this.customListener = customListener;
+    }
+
+    /**
+     * Get custom listener instance from PresenterAdapter instance
+     * @return
+     */
+    public Object getCustomListener(){
+        return customListener;
     }
 
     /**
