@@ -1,15 +1,15 @@
 # PresenterAdapter
 
-A lighweight Android library to help you to implement the MVP pattern for your RecyclerViews adapters in a clean way.
+A lighweight Android library to implement adapters for your RecyclerViews in a clean way, using the MVP pattern.
 
 ## Features
 
-  * Avoid implementing adapter classes, you only has to focus in views clases and their presenters
-  * Separates view representation with view logic thanks to MVP pattern
+  * Avoid writing adapter classes, you only has to focus in view clases and their presenters, following the MVP pattern.
+  * View representation and view logic decoupled from adapter framework classes.
   * Easy creation of different kinds of views for the same RecyclerView.
-  * Avoid create new presenter for each row in the list, presenter instances are recycled in the same way that adapter does with ViewHolder clases.
-  * Lifecycle callbacks in presenter clases. You can control view creation and destroy for each RecyclerView position.
-  * Custom presenter creation. You are responsible for creating presenter instance the same way yo usually do in your Activities or Fragments, which allows you to use tools like Dagger to inject your dependencies.
+  * Avoid create new presenters for each row, presenter instances are recycled in the same way that adapter does with ViewHolder clases.
+  * Lifecycle callbacks in presenter clases. You can control view creation and destroy for each RecyclerView position. Presenters are notified when they are destroyed to perform clear and unsubscribe operations if needed.
+  * Custom presenter creation. You are responsible for creating presenter instance the same way yo usually do in your Activities or Fragments, which allows you to use tools like Dagger to inject your dependencies (see description below for details).
 
 <p align="center">
   <img src ="/uml_diagram.png" />
@@ -115,6 +115,9 @@ public class MultipleAdapter extends PresenterAdapter<Country> {
             return ViewInfo.setView(NormalItemView.class).withLayout(R.layout.adapter_normal_item);
     }
 
+### Event listeners
+
+Click and long click listeners methods are provided to be notified when users interacts with your views. Also, you can set a custom object listener to be manually invoked from your view class when you want. See sample for details. 
 
 
 ## Author
