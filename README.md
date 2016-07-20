@@ -15,6 +15,16 @@ A lighweight Android library to implement adapters for your RecyclerViews in a c
   <img src ="/uml_diagram.png" />
 </p>
 
+## Download
+
+Grab via Gradle:
+```groovy
+repositories {
+    mavenCentral()
+}
+
+compile 'com.github.vicpinm:presenteradapter:1.1'
+```
 
 ## Usage
 ### Single view type adapter
