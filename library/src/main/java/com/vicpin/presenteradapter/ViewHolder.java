@@ -54,8 +54,10 @@ public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
             createPresenter();
         }
 
-        getPresenter().setView(this);
-        getPresenter().bind(data);
+        if(getPresenter() != null) {
+            getPresenter().setView(this);
+            getPresenter().bind(data);
+        }
     }
 
     /**
@@ -73,6 +75,8 @@ public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
      * Called when view is recycled in the adapter
      */
     public void onDestroy(){
-        getPresenter().onDestroy();
+        if(getPresenter() != null) {
+            getPresenter().onDestroy();
+        }
     }
 }

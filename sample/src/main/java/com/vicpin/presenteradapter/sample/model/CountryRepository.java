@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class CountryRepository {
 
+    private static final int PAGE_SIZE = 30;
+
     public static List<Country> getItems(Resources resources){
 
         List<Country> countries = new ArrayList<>();
@@ -21,5 +23,22 @@ public class CountryRepository {
         }
 
         return countries;
+    }
+
+    public static List<Country> getItemsPage(Resources resources, int page){
+
+        int startIndex = page * PAGE_SIZE;
+        int endIndex = (page * PAGE_SIZE) + PAGE_SIZE - 1;
+        List<Country> countries = getItems(resources);
+
+        if(startIndex >= countries.size()){
+            return new ArrayList<>();
+        }
+
+        if(endIndex > countries.size()){
+            endIndex = countries.size();
+        }
+
+        return countries.subList(startIndex,endIndex);
     }
 }

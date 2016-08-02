@@ -15,8 +15,10 @@
  */
 package com.vicpin.presenteradapter;
 
+import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +27,9 @@ import android.view.ViewGroup;
 
 import com.vicpin.presenteradapter.listeners.ItemClickListener;
 import com.vicpin.presenteradapter.listeners.ItemLongClickListener;
+import com.vicpin.presenteradapter.listeners.OnLoadMoreListener;
 import com.vicpin.presenteradapter.model.ViewInfo;
+import com.vicpin.presenteradapter.viewholder.LoadMoreViewHolder;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -45,7 +49,16 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      */
     private ItemClickListener<T> itemClickListener;
     private ItemLongClickListener<T> itemLongClickListener;
+    private OnLoadMoreListener loadMoreListener;
     private Object customListener;
+
+    /**
+     * Load more properties
+     */
+    private boolean loadMoreEnabled;
+    private final static int LOAD_MORE_TYPE = 99999;
+    private int loadMoreLayout = R.layout.adapter_load_more;
+
 
     public PresenterAdapter() {
     }
@@ -56,8 +69,13 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
 
     @Override
     public ViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewInfo viewInfo = getViewInfoForType(viewType);
-        return getViewHolder(parent, viewInfo);
+        if(viewType == LOAD_MORE_TYPE){
+            return LoadMoreViewHolder.newInstance(parent.getContext(), loadMoreLayout);
+        }
+        else {
+            ViewInfo viewInfo = getViewInfoForType(viewType);
+            return getViewHolder(parent, viewInfo);
+        }
     }
 
     private ViewInfo getViewInfoForType(int viewType){
@@ -82,8 +100,15 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     }
 
     @Override public int getItemViewType(int position) {
+        if(isLoadMorePosition(position)){
+            return LOAD_MORE_TYPE;
+        }
         ViewInfo viewInfo = getViewInfo(position);
         return getTypeForViewHolder(viewInfo);
+    }
+
+    private boolean isLoadMorePosition(int position){
+        return loadMoreEnabled && data.size() == position;
     }
 
     private int getTypeForViewHolder(ViewInfo viewInfo) {
@@ -95,8 +120,19 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder<T> holder, int position) {
-        holder.onBind(getItem(position));
-        appendListeners(holder);
+        if(!isLoadMorePosition(position)) {
+            holder.onBind(getItem(position));
+            appendListeners(holder);
+        }
+        else if(loadMoreEnabled){
+            notifyLoadMoreReached();
+        }
+    }
+
+    private void notifyLoadMoreReached() {
+        if(loadMoreListener != null){
+            loadMoreListener.onLoadMore();
+        }
     }
 
     private void appendListeners(final ViewHolder<T> viewHolder){
@@ -145,7 +181,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     }
 
     @Override public int getItemCount() {
-        return data.size();
+        return data.size() + (loadMoreEnabled ? 1 : 0);
     }
 
     /**
@@ -154,9 +190,21 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      * @return PresenterAdapter called instance
      */
     public void addData(@NonNull List<T> data){
-        int currentItemCount = getItemCount();
+        final int currentItemCount = getItemCount();
         this.data.addAll(data);
-        notifyItemRangeInserted(currentItemCount, data.size());
+        final int dataSize = data.size();
+
+        new Handler().post(new Runnable() {
+            @Override public void run() {
+                if(loadMoreEnabled) {
+                    notifyItemChanged(currentItemCount - 1);
+                }
+                else{
+                    notifyItemRangeInserted(currentItemCount, dataSize);
+                }
+
+            }
+        });
     }
 
     /**
@@ -199,5 +247,35 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      */
     public void setCustomListener(Object customListener){
         this.customListener = customListener;
+    }
+
+
+    /**
+     * Enable load more option for paginated collections
+     * @param loadMoreListener
+     */
+    public void enableLoadMore(@Nullable OnLoadMoreListener loadMoreListener) {
+        this.loadMoreEnabled = true;
+        this.loadMoreListener = loadMoreListener;
+    }
+
+    /**
+     * Disable load more option
+     */
+    public void disableLoadMore(){
+        this.loadMoreEnabled = false;
+        notifyItemRemoved(getItemCount());
+    }
+
+    public boolean isLoadMoreEnabled() {
+        return loadMoreEnabled;
+    }
+
+    /**
+     * Set custom load more resource layout
+     * @param layoutResource
+     */
+    public void setLoadMoreLayout(@LayoutRes int layoutResource){
+        this.loadMoreLayout = layoutResource;
     }
 }

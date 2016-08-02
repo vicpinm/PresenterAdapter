@@ -1,6 +1,7 @@
 package com.vicpin.presenteradapter.sample.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import com.vicpin.presenteradapter.SimplePresenterAdapter;
 import com.vicpin.presenteradapter.ViewHolder;
 import com.vicpin.presenteradapter.listeners.ItemClickListener;
 import com.vicpin.presenteradapter.listeners.ItemLongClickListener;
+import com.vicpin.presenteradapter.listeners.OnLoadMoreListener;
 import com.vicpin.presenteradapter.sample.R;
 import com.vicpin.presenteradapter.sample.model.Country;
 import com.vicpin.presenteradapter.sample.model.CountryRepository;
@@ -30,7 +32,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Victor on 25/06/2016.
  */
-public class MainFragment extends Fragment implements ItemClickListener<Country>,ItemLongClickListener<Country>, PresenterRecycledListener {
+public class MainFragment extends Fragment implements ItemClickListener<Country>,ItemLongClickListener<Country>, PresenterRecycledListener, OnLoadMoreListener {
 
     @BindView(R.id.list)
     RecyclerView mList;
@@ -39,6 +41,8 @@ public class MainFragment extends Fragment implements ItemClickListener<Country>
     TextView lastPresenterDestroyed;
 
     private int lastPresentersRecycled;
+    private int currentPage;
+    private PresenterAdapter<Country> adapter;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
@@ -49,8 +53,10 @@ public class MainFragment extends Fragment implements ItemClickListener<Country>
     @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        List<Country> data = CountryRepository.getItems(getResources());
-        PresenterAdapter<Country> adapter = SimplePresenterAdapter.with(CountryView.class).setLayout(R.layout.adapter_country).setData(data);
+        List<Country> data = CountryRepository.getItemsPage(getResources(), 0);
+        adapter = SimplePresenterAdapter.with(CountryView.class).setLayout(R.layout.adapter_country).setData(data);
+        adapter.enableLoadMore(this);
+
         appendListeners(adapter);
 
         mList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -74,5 +80,20 @@ public class MainFragment extends Fragment implements ItemClickListener<Country>
     @Override public void onPresenterRecycled(int presenterId) {
         lastPresenterDestroyed.setText("Last presenters recycled: " + lastPresentersRecycled + " - " + presenterId);
         lastPresentersRecycled = presenterId;
+    }
+
+    @Override public void onLoadMore() {
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                currentPage++;
+                List<Country> newData = CountryRepository.getItemsPage(getResources(), currentPage);
+                if(newData.size() > 0) {
+                    adapter.addData(newData);
+                } else{
+                    adapter.disableLoadMore();
+                }
+            }
+        },1500);
+
     }
 }
