@@ -20,7 +20,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,7 +156,6 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     @Override public void onViewRecycled(ViewHolder<T> holder) {
         super.onViewRecycled(holder);
         holder.onDestroy();
-        Log.e("DESTROY", "position" + holder.getAdapterPosition());
     }
 
     @Override public boolean onFailedToRecycleView(ViewHolder<T> holder) {
@@ -178,6 +176,10 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
         this.data = data;
         notifyDataSetChanged();
         return this;
+    }
+
+    public List<T> getData(){
+        return this.data;
     }
 
     @Override public int getItemCount() {
