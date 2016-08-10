@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -175,6 +176,26 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     public PresenterAdapter<T> setData(@NonNull List<T> data){
         this.data = data;
         notifyDataSetChanged();
+        return this;
+    }
+
+    /**
+     * Set adapter data and notifies the change, keeping scroll position
+     * @param data items collection
+     * @param recyclerView RecyclerView instance
+     * @return PresenterAdapter called instance
+     */
+    public PresenterAdapter<T> setDataKeepScroll(@NonNull List<T> data,@NonNull RecyclerView recyclerView){
+        this.data = data;
+
+        int currentPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+        View v = recyclerView.getChildAt(0);
+        int top = (v == null) ? 0 : (v.getTop() - recyclerView.getPaddingTop());
+
+        notifyDataSetChanged();
+
+        ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(currentPosition, top);
+
         return this;
     }
 
