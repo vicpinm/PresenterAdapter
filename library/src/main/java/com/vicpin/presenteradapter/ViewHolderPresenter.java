@@ -15,6 +15,7 @@
  */
 package com.vicpin.presenteradapter;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -31,6 +32,7 @@ public abstract class ViewHolderPresenter<Data, PresenterView> {
 
     private PresenterView mView;
     private Data mItem;
+    private List<Data> mDataCollection;
     private Integer presenterId;
 
     public void setView(PresenterView view) {
@@ -39,7 +41,6 @@ public abstract class ViewHolderPresenter<Data, PresenterView> {
 
     public void bind(Data item) {
         this.mItem = item;
-        onCreate();
     }
 
     /**
@@ -60,10 +61,19 @@ public abstract class ViewHolderPresenter<Data, PresenterView> {
         return mItem;
     }
 
+    public List<Data> getDataCollection(){
+        return this.mDataCollection;
+    }
+
     public int getPresenterId(){
         if(presenterId == null){
             presenterId = presenterIdsGenerator.getAndIncrement();
         }
         return presenterId;
+    }
+
+
+    public void bindDataCollection(List<Data> dataCollection) {
+        this.mDataCollection = dataCollection;
     }
 }

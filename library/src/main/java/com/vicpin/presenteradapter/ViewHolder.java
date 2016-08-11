@@ -19,6 +19,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.List;
+
 /**
  * ViewHolder parent class
  * @param <T> Adapter data type
@@ -46,17 +48,42 @@ public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Called when adapter's onBindViewHolder is executed
-     * Initializes presenter setting the view and the data
+     * Called when adapter's onBindViewHolder is executed for a normal row type
+     * Initializes presenter binding view and data item
      */
-    public void onBind(T data) {
+    public void onBind(List<T> data, int position) {
+        setupPresenter(data);
+
+        if(getPresenter() != null) {
+            getPresenter().bind(data.get(position));
+            getPresenter().onCreate();
+        }
+    }
+
+    /**
+     * Called when adapter's onBindViewHolder is executed for a header row type
+     * Initializes presenter binding view but no data item
+     */
+    public void onBindHeader(List<T> data) {
+        setupPresenter(data);
+
+        if(getPresenter() != null) {
+            getPresenter().onCreate();
+        }
+    }
+
+    /**
+     * Initializes presenter binding view and adapter data collection
+     * @param data adapter data collection
+     */
+    private void setupPresenter(List<T> data){
         if(getPresenter() == null) {
             createPresenter();
         }
 
         if(getPresenter() != null) {
             getPresenter().setView(this);
-            getPresenter().bind(data);
+            getPresenter().bindDataCollection(data);
         }
     }
 

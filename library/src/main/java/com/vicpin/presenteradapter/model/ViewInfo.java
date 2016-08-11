@@ -37,7 +37,7 @@ public class ViewInfo<T> {
      * @param <T> data type for adapter
      * @return new ViewInfo instance
      */
-    public static <T> ViewInfo<T> setView(Class<? extends ViewHolder<T>> viewHolderClass) {
+    public static <T> ViewInfo<T> with(Class<? extends ViewHolder<T>> viewHolderClass) {
         ViewInfo<T> viewInfo = new ViewInfo<>();
         viewInfo.setViewHolderClass(viewHolderClass);
         return viewInfo;
@@ -48,7 +48,7 @@ public class ViewInfo<T> {
      * @param layoutResourceId
      * @return
      */
-    public ViewInfo<T> withLayout(@LayoutRes int layoutResourceId){
+    public ViewInfo<T> setLayout(@LayoutRes int layoutResourceId){
         this.viewResourceId = layoutResourceId;
         return this;
     }

@@ -18,10 +18,12 @@ import com.vicpin.presenteradapter.ViewHolder;
 import com.vicpin.presenteradapter.listeners.ItemClickListener;
 import com.vicpin.presenteradapter.listeners.ItemLongClickListener;
 import com.vicpin.presenteradapter.listeners.OnLoadMoreListener;
+import com.vicpin.presenteradapter.model.ViewInfo;
 import com.vicpin.presenteradapter.sample.R;
 import com.vicpin.presenteradapter.sample.model.Country;
 import com.vicpin.presenteradapter.sample.model.CountryRepository;
 import com.vicpin.presenteradapter.sample.view.adapter.CountryView;
+import com.vicpin.presenteradapter.sample.view.adapter.HeaderView;
 import com.vicpin.presenteradapter.sample.view.interfaces.PresenterRecycledListener;
 
 import java.util.List;
@@ -52,21 +54,27 @@ public class MainFragment extends Fragment implements ItemClickListener<Country>
 
     @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        List<Country> data = CountryRepository.getItemsPage(getResources(), 0);
-        adapter = SimplePresenterAdapter.with(CountryView.class).setLayout(R.layout.adapter_country).setData(data);
-        adapter.enableLoadMore(this);
-
-        appendListeners(adapter);
-
-        mList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mList.setAdapter(adapter);
+        setupAdapter();
+        appendListeners();
+        setupRecyclerView();
     }
 
-    public void appendListeners(PresenterAdapter<Country> adapter){
+    public void setupAdapter(){
+        List<Country> data = CountryRepository.getItemsPage(getResources(), 0);
+        adapter = SimplePresenterAdapter.with(CountryView.class).setLayout(R.layout.adapter_country).setData(data);
+        adapter.addHeader(ViewInfo.with(HeaderView.class).setLayout(R.layout.adapter_header));
+        adapter.enableLoadMore(this);
+    }
+
+    public void appendListeners(){
         adapter.setItemClickListener(this);
         adapter.setItemLongClickListener(this);
         adapter.setCustomListener(this);
+    }
+
+    public void setupRecyclerView(){
+        mList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mList.setAdapter(adapter);
     }
 
     @Override public void onItemClick(Country item, ViewHolder<Country> view) {
@@ -82,6 +90,9 @@ public class MainFragment extends Fragment implements ItemClickListener<Country>
         lastPresentersRecycled = presenterId;
     }
 
+    /**
+     * Pagination listener. Simulates a 1500ms load delay.
+     */
     @Override public void onLoadMore() {
         new Handler().postDelayed(new Runnable() {
             @Override public void run() {

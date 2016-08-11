@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,11 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     private List<T> data = new ArrayList<>();
 
     /**
+     * Header rows
+     */
+    private List<ViewInfo<T>> headers = new ArrayList<>();
+
+    /**
      * Event listeners
      */
     private ItemClickListener<T> itemClickListener;
@@ -57,6 +63,8 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      */
     private boolean loadMoreEnabled;
     private final static int LOAD_MORE_TYPE = 99999;
+    private final static int HEADER_TYPE = 100000;
+    private static int HEADER_MAX_TYPE = HEADER_TYPE;
     private int loadMoreLayout = R.layout.adapter_load_more;
 
 
@@ -79,7 +87,16 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     }
 
     private ViewInfo getViewInfoForType(int viewType){
-        return registeredViewInfo.get(viewType);
+        if(isHeaderType(viewType)){
+            return headers.get(viewType - HEADER_TYPE);
+        }
+        else {
+            return registeredViewInfo.get(viewType);
+        }
+    }
+
+    public boolean isHeaderType(int viewType){
+        return viewType >= HEADER_TYPE && viewType < HEADER_MAX_TYPE;
     }
 
     private ViewHolder<T> getViewHolder(ViewGroup parent, ViewInfo viewInfo) {
@@ -103,12 +120,24 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
         if(isLoadMorePosition(position)){
             return LOAD_MORE_TYPE;
         }
+        else if(isHeaderPosition(position)){
+            return HEADER_TYPE + position;
+        }
+
         ViewInfo viewInfo = getViewInfo(position);
         return getTypeForViewHolder(viewInfo);
     }
 
     private boolean isLoadMorePosition(int position){
-        return loadMoreEnabled && data.size() == position;
+        return loadMoreEnabled && getItemCount() - 1 == position;
+    }
+
+    private boolean isHeaderPosition(int position){
+        return position < headers.size();
+    }
+
+    private boolean isNormalPosition(int position){
+        return !isLoadMorePosition(position) && !isHeaderPosition(position);
     }
 
     private int getTypeForViewHolder(ViewInfo viewInfo) {
@@ -120,13 +149,21 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder<T> holder, int position) {
-        if(!isLoadMorePosition(position)) {
-            holder.onBind(getItem(position));
+        Log.d("aa","bind position " + position + " size " + data.size());
+        if(isNormalPosition(position)) {
+            holder.onBind(data, getPositionWithoutHeaders(position));
             appendListeners(holder);
         }
-        else if(loadMoreEnabled){
+        else if(isHeaderPosition(position)){
+            holder.onBindHeader(data);
+        }
+        else if(isLoadMorePosition(position)){
             notifyLoadMoreReached();
         }
+    }
+
+    public int getPositionWithoutHeaders(int position){
+        return position - headers.size();
     }
 
     private void notifyLoadMoreReached() {
@@ -168,6 +205,11 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
         return data.get(position);
     }
 
+    public void addHeader(ViewInfo<T> headerInfo){
+        this.headers.add(headerInfo);
+        HEADER_MAX_TYPE = HEADER_TYPE + headers.size();
+    }
+
     /**
      * Set adapter data and notifies the change
      * @param data items collection
@@ -204,7 +246,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     }
 
     @Override public int getItemCount() {
-        return data.size() + (loadMoreEnabled ? 1 : 0);
+        return data.size() + headers.size() + (loadMoreEnabled ? 1 : 0);
     }
 
     /**

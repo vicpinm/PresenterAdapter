@@ -54,7 +54,7 @@ public class SimplePresenterAdapter<T> extends PresenterAdapter<T> {
     }
 
     @Override public ViewInfo getViewInfo(int position) {
-        return ViewInfo.setView(viewHolderClass).withLayout(layoutResourceId);
+        return ViewInfo.with(viewHolderClass).setLayout(layoutResourceId);
     }
 
 
