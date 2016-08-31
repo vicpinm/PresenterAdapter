@@ -31,6 +31,10 @@ public class CountryPresenter extends ViewHolderPresenter<Country, CountryPresen
         getView().setImage(getData().getImageResourceId());
     }
 
+    public void onDeleteItem() {
+        getView().deleteItem(getData());
+    }
+
     public interface View {
         void setCountryName(String s);
 
@@ -39,5 +43,7 @@ public class CountryPresenter extends ViewHolderPresenter<Country, CountryPresen
         void setImage(int resourceId);
 
         void notifyPresenterDetroyed(int presenterId);
+
+        void deleteItem(Country data);
     }
 }

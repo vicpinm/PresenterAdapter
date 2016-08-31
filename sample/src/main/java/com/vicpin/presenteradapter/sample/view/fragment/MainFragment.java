@@ -24,7 +24,8 @@ import com.vicpin.presenteradapter.sample.model.Country;
 import com.vicpin.presenteradapter.sample.model.CountryRepository;
 import com.vicpin.presenteradapter.sample.view.adapter.CountryView;
 import com.vicpin.presenteradapter.sample.view.adapter.HeaderView;
-import com.vicpin.presenteradapter.sample.view.interfaces.PresenterRecycledListener;
+import com.vicpin.presenteradapter.sample.view.interfaces.ItemDeletedListener;
+import com.vicpin.presenteradapter.sample.view.interfaces.ItemRecycledListener;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Victor on 25/06/2016.
  */
-public class MainFragment extends Fragment implements ItemClickListener<Country>,ItemLongClickListener<Country>, PresenterRecycledListener, OnLoadMoreListener {
+public class MainFragment extends Fragment implements ItemClickListener<Country>,ItemLongClickListener<Country>, ItemRecycledListener, ItemDeletedListener<Country>, OnLoadMoreListener {
 
     @BindView(R.id.list)
     RecyclerView mList;
@@ -85,7 +86,7 @@ public class MainFragment extends Fragment implements ItemClickListener<Country>
         Toast.makeText(getActivity(), "Country long pressed: " + item.getName(), Toast.LENGTH_SHORT).show();
     }
 
-    @Override public void onPresenterRecycled(int presenterId) {
+    @Override public void onItemRecycled(int presenterId) {
         lastPresenterDestroyed.setText("Last presenters recycled: " + lastPresentersRecycled + " - " + presenterId);
         lastPresentersRecycled = presenterId;
     }
@@ -106,5 +107,10 @@ public class MainFragment extends Fragment implements ItemClickListener<Country>
             }
         },1500);
 
+    }
+
+    @Override public void onItemDeleted(Country item) {
+        adapter.removeItem(item);
+        adapter.updateHeaders();
     }
 }

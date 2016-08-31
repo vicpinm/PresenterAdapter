@@ -71,11 +71,14 @@ public class ViewInfo<T> {
 
         ViewInfo<?> viewInfo = (ViewInfo<?>) o;
 
+        if (viewResourceId != viewInfo.viewResourceId) return false;
         return viewHolderClass != null ? viewHolderClass.equals(viewInfo.viewHolderClass) : viewInfo.viewHolderClass == null;
 
     }
 
     @Override public int hashCode() {
-        return viewHolderClass != null ? viewHolderClass.hashCode() : 0;
+        int result = viewHolderClass != null ? viewHolderClass.hashCode() : 0;
+        result = 31 * result + viewResourceId;
+        return result;
     }
 }

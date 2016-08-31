@@ -9,10 +9,12 @@ import com.vicpin.presenteradapter.ViewHolderPresenter;
 import com.vicpin.presenteradapter.sample.R;
 import com.vicpin.presenteradapter.sample.model.Country;
 import com.vicpin.presenteradapter.sample.presenter.CountryPresenter;
-import com.vicpin.presenteradapter.sample.view.interfaces.PresenterRecycledListener;
+import com.vicpin.presenteradapter.sample.view.interfaces.ItemDeletedListener;
+import com.vicpin.presenteradapter.sample.view.interfaces.ItemRecycledListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Victor on 25/06/2016.
@@ -66,7 +68,16 @@ public class CountryView extends ViewHolder<Country> implements CountryPresenter
      */
     @Override public void notifyPresenterDetroyed(int presenterId) {
         if(getCustomListener() != null) {
-            ((PresenterRecycledListener) getCustomListener()).onPresenterRecycled(presenterId);
+            ((ItemRecycledListener) getCustomListener()).onItemRecycled(presenterId);
         }
+    }
+
+    @OnClick(R.id.deleteButton)
+    public void onDeleteButtonClicked(View v){
+        mPresenter.onDeleteItem();
+    }
+
+    public void deleteItem(Country item){
+        ((ItemDeletedListener) getCustomListener()).onItemDeleted(item);
     }
 }

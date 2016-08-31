@@ -166,6 +166,10 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
         return position - headers.size();
     }
 
+    public int getPositionWithHeaders(int position){
+        return position + headers.size();
+    }
+
     private void notifyLoadMoreReached() {
         if(loadMoreListener != null){
             loadMoreListener.onLoadMore();
@@ -202,12 +206,18 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     }
 
     public T getItem(int position){
-        return data.get(position);
+        return data.get(getPositionWithoutHeaders(position));
     }
 
     public void addHeader(ViewInfo<T> headerInfo){
         this.headers.add(headerInfo);
         HEADER_MAX_TYPE = HEADER_TYPE + headers.size();
+    }
+
+    public void updateHeaders(){
+        if(this.headers != null && this.headers.size() > 0){
+            notifyItemRangeChanged(0, headers.size());
+        }
     }
 
     /**
@@ -248,7 +258,6 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     @Override public int getItemCount() {
         return data.size() + headers.size() + (loadMoreEnabled ? 1 : 0);
     }
-
     /**
      * Add data at the end of the current data list and notifies the change
      * @param data items collection to append at the end of the current collection
@@ -267,7 +276,6 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
                 else{
                     notifyItemRangeInserted(currentItemCount, dataSize);
                 }
-
             }
         });
     }
@@ -278,6 +286,13 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     public void clearData(){
         this.data = new ArrayList<>();
         notifyDataSetChanged();
+    }
+
+    public void removeItem(T item){
+        if(this.data != null && this.data.contains(item)){
+            notifyItemRemoved(getPositionWithHeaders(this.data.indexOf(item)));
+            this.data.remove(item);
+        }
     }
 
     /**
@@ -342,5 +357,19 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      */
     public void setLoadMoreLayout(@LayoutRes int layoutResource){
         this.loadMoreLayout = layoutResource;
+    }
+
+    /**
+     * Reload current views showing on the screen
+     * @param recyclerView
+     */
+    public void refreshViews(RecyclerView recyclerView){
+        if(recyclerView.getLayoutManager() != null) {
+            int firstPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+            int lastPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+            for (int i = firstPosition; i <= lastPosition; i++) {
+                notifyItemChanged(i);
+            }
+        }
     }
 }
