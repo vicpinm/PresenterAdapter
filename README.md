@@ -108,9 +108,9 @@ PresenterAdapter class has only one abstract method you have to implement, getVi
 
     @Override public ViewInfo getViewInfo(int position) {
         if(position % 2 == 0)
-            return ViewInfo.setView(CountryView.class).withLayout(R.layout.adapter_country_even);
+            return ViewInfo.with(CountryView.class).setLayout(R.layout.adapter_country_even);
         else
-            return ViewInfo.setView(CountryView.class).withLayout(R.layout.adapter_country_odd);
+            return ViewInfo.with(CountryView.class).setLayout(R.layout.adapter_country_odd);
     }
 }
 
@@ -120,9 +120,9 @@ public class MultipleAdapter extends PresenterAdapter<Country> {
 
     @Override public ViewInfo getViewInfo(int position) {
         if((getItem(position).isFavourite())
-            return ViewInfo.setView(FavouriteItemView.class).withLayout(R.layout.adapter_favourite_item);
+            return ViewInfo.with(FavouriteItemView.class).setLayout(R.layout.adapter_favourite_item);
         else
-            return ViewInfo.setView(NormalItemView.class).withLayout(R.layout.adapter_normal_item);
+            return ViewInfo.with(NormalItemView.class).setLayout(R.layout.adapter_normal_item);
     }
 
 ### Event listeners
