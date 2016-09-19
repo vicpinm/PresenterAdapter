@@ -23,7 +23,7 @@ repositories {
     mavenCentral()
 }
 
-compile 'com.github.vicpinm:presenteradapter:1.5.2'
+compile 'com.github.vicpinm:presenteradapter:1.5.3'
 ```
 
 ## Usage
@@ -130,6 +130,12 @@ public class MultipleAdapter extends PresenterAdapter<Country> {
 Click and long click listeners methods are provided to be notified when users interacts with your views. Also, you can set a custom object listener to be manually invoked from your view class when you want. See sample for details. 
 
 
+## Proguard
+
+    -keepclassmembers public class * extends com.vicpin.presenteradapter.ViewHolder {
+        public <init>(...);
+    }
+   
 ## Author
 
 Víctor Manuel Pineda Murcia | http://vicpinm.github.io/PresenterAdapter/
