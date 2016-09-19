@@ -26,10 +26,10 @@ import com.vicpin.presenteradapter.model.ViewInfo;
  */
 public class SimplePresenterAdapter<T> extends PresenterAdapter<T> {
 
-    private Class<? extends ViewHolder<T>> viewHolderClass;
-    private int layoutResourceId;
+    protected Class<? extends ViewHolder<T>> viewHolderClass;
+    protected int layoutResourceId;
 
-    private SimplePresenterAdapter(){}
+    public SimplePresenterAdapter(){}
 
     /**
      * Static factory method to create new SimplePresenterAdapter instance. Layout resource must be setted with setLayout method.

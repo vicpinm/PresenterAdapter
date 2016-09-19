@@ -77,9 +77,7 @@ public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
      * @param data adapter data collection
      */
     private void setupPresenter(List<T> data){
-        if(getPresenter() == null) {
-            createPresenter();
-        }
+        createPresenter();
 
         if(getPresenter() != null) {
             getPresenter().setView(this);

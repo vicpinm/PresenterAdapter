@@ -34,6 +34,7 @@ import com.vicpin.presenteradapter.viewholder.LoadMoreViewHolder;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,6 +63,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      * Load more properties
      */
     private boolean loadMoreEnabled;
+    private boolean loadMoreInvoked;
     private final static int LOAD_MORE_TYPE = 99999;
     private final static int HEADER_TYPE = 100000;
     private static int HEADER_MAX_TYPE = HEADER_TYPE;
@@ -171,7 +173,8 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     }
 
     private void notifyLoadMoreReached() {
-        if(loadMoreListener != null){
+        if(loadMoreListener != null && !loadMoreInvoked){
+            loadMoreInvoked = true;
             loadMoreListener.onLoadMore();
         }
     }
@@ -227,6 +230,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      */
     public PresenterAdapter<T> setData(@NonNull List<T> data){
         this.data = data;
+        this.loadMoreInvoked = false;
         notifyDataSetChanged();
         return this;
     }
@@ -239,7 +243,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      */
     public PresenterAdapter<T> setDataKeepScroll(@NonNull List<T> data,@NonNull RecyclerView recyclerView){
         this.data = data;
-
+        this.loadMoreInvoked = false;
         int currentPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
         View v = recyclerView.getChildAt(0);
         int top = (v == null) ? 0 : (v.getTop() - recyclerView.getPaddingTop());
@@ -258,12 +262,20 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     @Override public int getItemCount() {
         return data.size() + headers.size() + (loadMoreEnabled ? 1 : 0);
     }
+
+    public int getHeadersCount(){
+        return headers != null ? headers.size() : 0;
+    }
+
     /**
      * Add data at the end of the current data list and notifies the change
      * @param data items collection to append at the end of the current collection
      * @return PresenterAdapter called instance
      */
     public void addData(@NonNull List<T> data){
+
+        this.loadMoreInvoked = false;
+
         final int currentItemCount = getItemCount();
         this.data.addAll(data);
         final int dataSize = data.size();
@@ -293,6 +305,61 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
             notifyItemRemoved(getPositionWithHeaders(this.data.indexOf(item)));
             this.data.remove(item);
         }
+    }
+
+    /**
+     * Swap two no header items
+     * @param from
+     * @param to
+     */
+    public void swapItems(int from, int to){
+        if(isHeaderPosition(from) || isHeaderPosition(to)){
+            throw new IllegalArgumentException("Header positions are not swapable");
+        }
+
+        from -= getHeadersCount();
+        to -= getHeadersCount();
+
+        if(from >= getData().size() || to >= getData().size()){
+            throw new IllegalArgumentException("Cannot swap items, data size is " + data.size());
+        }
+
+        if(from == to){
+            return;
+        }
+
+        Collections.swap(getData(),from, to);
+
+        notifyItemMoved(from, to);
+
+    }
+
+    /**
+     * Move one item to another position, updating intermediates positions
+     * @param from
+     * @param to
+     */
+    public void moveItem(int from, int to){
+        if(isHeaderPosition(from) || isHeaderPosition(to)){
+            throw new IllegalArgumentException("Header positions are not swapable");
+        }
+
+        from -= getHeadersCount();
+        to -= getHeadersCount();
+
+        if(from >= getData().size() || to >= getData().size()){
+            throw new IllegalArgumentException("Cannot move item, data size is " + data.size());
+        }
+
+        if(from == to){
+            return;
+        }
+
+        T item = getData().remove(from);
+        getData().add(to, item);
+
+        notifyItemMoved(from, to);
+
     }
 
     /**
@@ -336,6 +403,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      */
     public void enableLoadMore(@Nullable OnLoadMoreListener loadMoreListener) {
         this.loadMoreEnabled = true;
+        this.loadMoreInvoked = false;
         this.loadMoreListener = loadMoreListener;
     }
 
@@ -344,6 +412,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      */
     public void disableLoadMore(){
         this.loadMoreEnabled = false;
+        this.loadMoreInvoked = false;
         notifyItemRemoved(getItemCount());
     }
 
@@ -370,6 +439,16 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
             for (int i = firstPosition; i <= lastPosition; i++) {
                 notifyItemChanged(i);
             }
+        }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if(hasStableIds()) {
+            return position < getHeadersCount() ? headers.get(position).hashCode() : getItem(position).hashCode();
+        }
+        else{
+            return super.getItemId(position);
         }
     }
 }

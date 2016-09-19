@@ -15,3 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keepattributes SourceFile,LineNumberTable,*Annotation*
+
+-keepclassmembers public class * extends com.vicpin.presenteradapter.ViewHolder {
+   public <init>(...);
+   }
