@@ -258,7 +258,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     }
 
     @Override public int getItemCount() {
-        return data.size() + headers.size() + (loadMoreEnabled ? 1 : 0);
+        return (data != null ? data.size() : 0) + (headers != null ? headers.size() : 0) + (loadMoreEnabled ? 1 : 0);
     }
 
     public int getHeadersCount(){
