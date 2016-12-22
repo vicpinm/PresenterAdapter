@@ -48,7 +48,7 @@ public class SimplePresenterAdapter<T> extends PresenterAdapter<T> {
      * @param layoutResourceId
      * @return
      */
-    public SimplePresenterAdapter setLayout(int layoutResourceId){
+    public SimplePresenterAdapter<T> setLayout(int layoutResourceId){
         this.layoutResourceId = layoutResourceId;
         return this;
     }
