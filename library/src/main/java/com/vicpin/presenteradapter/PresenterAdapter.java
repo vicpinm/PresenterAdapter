@@ -409,9 +409,13 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
      * Disable load more option
      */
     public void disableLoadMore(){
-        this.loadMoreEnabled = false;
-        this.loadMoreInvoked = false;
-        notifyItemRemoved(getItemCount());
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                PresenterAdapter.this.loadMoreEnabled = false;
+                PresenterAdapter.this.loadMoreInvoked = false;
+                notifyItemRemoved(getItemCount());
+            }
+        },100);
     }
 
     public boolean isLoadMoreEnabled() {
