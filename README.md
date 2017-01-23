@@ -23,7 +23,7 @@ repositories {
     mavenCentral()
 }
 
-compile 'com.github.vicpinm:presenteradapter:1.5.6'
+compile 'com.github.vicpinm:presenteradapter:1.5.7'
 ```
 
 ## Usage
