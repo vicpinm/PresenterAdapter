@@ -403,6 +403,7 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
         this.loadMoreEnabled = true;
         this.loadMoreInvoked = false;
         this.loadMoreListener = loadMoreListener;
+        notifyItemInserted(getItemCount());
     }
 
     /**
