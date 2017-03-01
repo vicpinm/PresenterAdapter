@@ -55,7 +55,7 @@ public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
         setupPresenter(data);
 
         if(getPresenter() != null) {
-            getPresenter().bind(data.get(position));
+            getPresenter().bind(data.get(position), position);
             getPresenter().onCreate();
         }
     }

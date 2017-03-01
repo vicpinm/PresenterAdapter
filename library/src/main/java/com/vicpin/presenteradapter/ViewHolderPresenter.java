@@ -32,6 +32,7 @@ public abstract class ViewHolderPresenter<Data, PresenterView> {
 
     private PresenterView mView;
     private Data mItem;
+    private int mPosition;
     private List<Data> mDataCollection;
     private Integer presenterId;
 
@@ -39,8 +40,9 @@ public abstract class ViewHolderPresenter<Data, PresenterView> {
         this.mView = view;
     }
 
-    public void bind(Data item) {
+    public void bind(Data item, int position) {
         this.mItem = item;
+        this.mPosition = position;
     }
 
     /**
@@ -75,5 +77,9 @@ public abstract class ViewHolderPresenter<Data, PresenterView> {
 
     public void bindDataCollection(List<Data> dataCollection) {
         this.mDataCollection = dataCollection;
+    }
+
+    public int getPosition() {
+        return mPosition;
     }
 }
