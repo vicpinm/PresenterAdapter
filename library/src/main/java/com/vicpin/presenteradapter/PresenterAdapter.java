@@ -181,7 +181,10 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
         if(itemClickListener != null) {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    itemClickListener.onItemClick(getItem(viewHolder.getAdapterPosition()), viewHolder);
+                    int itemPosition = viewHolder.getAdapterPosition();
+                    if(itemPosition != RecyclerView.NO_POSITION && getItem(itemPosition) != null) {
+                        itemClickListener.onItemClick(getItem(viewHolder.getAdapterPosition()), viewHolder);
+                    }
                 }
             });
         }
@@ -207,7 +210,13 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
     }
 
     public T getItem(int position){
-        return data.get(getPositionWithoutHeaders(position));
+        int finalPos = getPositionWithoutHeaders(position);
+        if(finalPos >= 0 && finalPos < data.size()) {
+            return data.get(getPositionWithoutHeaders(position));
+        }
+        else{
+            return null;
+        }
     }
 
     public void addHeader(ViewInfo<T> headerInfo){
