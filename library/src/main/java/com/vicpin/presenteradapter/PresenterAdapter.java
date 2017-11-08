@@ -452,7 +452,10 @@ public abstract class PresenterAdapter<T> extends RecyclerView.Adapter<ViewHolde
 
     @Override
     public long getItemId(int position) {
-        if(hasStableIds()) {
+        if(isLoadMorePosition(position)){
+            return LOAD_MORE_TYPE;
+        }
+        else if(hasStableIds()) {
             return position < getHeadersCount() ? headers.get(position).hashCode() : getItem(position).hashCode();
         }
         else{
